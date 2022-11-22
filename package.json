@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "source": "src/main/ts/index.ts",
+  "description": "Module Federation manifest plugin",
   "main": "target/es5/blank-ts-repo.js",
   "types": "typings/index.d.ts",
   "typescript": {
