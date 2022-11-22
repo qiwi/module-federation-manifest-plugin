@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.1...v1.0.2) (2022-11-22)
+
+### Fixes & improvements
+* fix: restore build artifact on release ([650f960](https://github.com/qiwi/module-federation-manifest-plugin/commit/650f960cde0fe631aef669bdfef029b0c9b7a4a1))
+* fix: fix entry points, pkg scope & refs, enable CodeClimate ([71c0d2a](https://github.com/qiwi/module-federation-manifest-plugin/commit/71c0d2ad38122bd800be0e1180293a91e2ca8ced))
+
 ## [1.0.1](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.0...v1.0.1) (2022-11-22)
 
 ### Fixes & improvements
