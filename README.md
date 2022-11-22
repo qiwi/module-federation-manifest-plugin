@@ -14,8 +14,8 @@ npm i -D @qiwi/module-federation-manifest-plugin
 Add plugin to webpack config. This plugin works together with `ModuleFederationPlugin`. In case of usage without it error will be raised
 
 ```typescript
-import path from 'path'
 import webpack from 'webpack'
+import path from 'path'
 import { ModuleFederationManifestPlugin } from '@qiwi/module-federation-manifest-plugin'
 
 export const config: webpack.Configuration = {
