@@ -1,0 +1,11 @@
+{
+  "name": "shared-kitchensink",
+  "private": true,
+  "dependencies": {
+    "react": "^1.0.0",
+    "a": "^1.0.0",
+    "b": "^1.0.0",
+    "c": "^1.0.0",
+    "d": "^1.0.0"
+  }
+}

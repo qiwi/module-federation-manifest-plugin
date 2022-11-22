@@ -1,0 +1,7 @@
+{
+  "name": "multiple-package-versions",
+  "private": true,
+  "dependencies": {
+    "react": "^1.0.0"
+  }
+}
