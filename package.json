@@ -1,6 +1,6 @@
 {
   "name": "@qiwi/module-federation-manifest-plugin",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "source": "src/main/ts/index.ts",
   "main": "target/es5/blank-ts-repo.js",
