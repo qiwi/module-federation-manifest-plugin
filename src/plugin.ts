@@ -13,7 +13,6 @@ type ModuleFederationPluginOptions = ConstructorParameters<typeof webpack.contai
 
 export interface ModuleFederationManifestPluginOptions {
   filename: string
-  version: string
 }
 
 const undefinedOrNotEmptyObject = <T extends {}>(obj: T): T | undefined => {
@@ -121,7 +120,6 @@ export class ModuleFederationManifestPlugin {
 
     return {
       name: this.federationPluginOptions.name as string,
-      version: this.options.version,
       publicPath,
       entry,
       exposes: undefinedOrNotEmptyObject(exposes),

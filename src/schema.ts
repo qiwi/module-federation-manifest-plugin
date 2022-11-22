@@ -4,10 +4,6 @@ export interface ModuleFederationManifest {
    */
   name: string
   /**
-   * Application version
-   */
-  version: string
-  /**
    * Public path used in Webpack build
    */
   publicPath: string

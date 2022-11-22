@@ -23,7 +23,6 @@ export const config: webpack.Configuration = {
     }),
     new ModuleFederationManifestPlugin({
       filename: 'manifest.json',
-      version: 'test',
     }),
   ],
 }

@@ -4,7 +4,6 @@ import { buildAndAssert } from './helpers/build-and-assert'
 test('multiple package versions', async (t) => {
   await buildAndAssert(t, 'multiple-package-versions', {
     name: 'container',
-    version: 'test',
     publicPath: 'auto',
     provides: {
       react: [
@@ -24,7 +23,6 @@ test('multiple package versions', async (t) => {
 test('multiple package with same versions', async (t) => {
   await buildAndAssert(t, 'multiple-package-same-versions', {
     name: 'container',
-    version: 'test',
     publicPath: 'auto',
     provides: {
       react: [
@@ -44,7 +42,6 @@ test('multiple package with same versions', async (t) => {
 test('shared kitchensink', async (t) => {
   await buildAndAssert(t, 'shared-kitchensink', {
     name: 'container',
-    version: 'test',
     publicPath: 'auto',
     provides: {
       a: [{ version: '1.0.0', shareScope: 'default' }],
@@ -89,6 +86,5 @@ test('remotes and exposed kitchensink', async (t) => {
         modules: ['app', 'helpers'],
       },
     },
-    version: 'test',
   })
 })
