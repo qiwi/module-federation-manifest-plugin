@@ -21,7 +21,7 @@ import { ModuleFederationManifestPlugin } from '@qiwi/module-federation-manifest
 export const config: webpack.Configuration = {
   plugins: [
     new webpack.container.ModuleFederationPlugin({
-      /** Your options */
+      /** Your options here */
     }),
     new ModuleFederationManifestPlugin({
       filename: 'manifest.json',
