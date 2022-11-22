@@ -1,5 +1,5 @@
 {
-  "name": "blank-ts-repo",
+  "name": "@qiwi/module-federation-manifest-plugin",
   "out": "./docs",
   "exclude": ["src/test", "**/node_modules/**"],
   "externalPattern": ["**/node_modules/**"],
