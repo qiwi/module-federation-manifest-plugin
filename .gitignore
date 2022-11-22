@@ -17,7 +17,14 @@ pids
 flow-coverage
 lib-cov
 coverage
+coverage.*
 .nyc_output
+*.lcov
+
+# Codeclimate
+codeclimate.*
+cc-reporter
+cc-reporter.*
 
 # Bundles
 bundle/
@@ -50,3 +57,10 @@ flow-typed/npm/
 .tsbuildinfo
 buildcache
 .buildcache
+
+# Creds
+*.asc
+*.key
+*.pem
+*.cert
+*.p12
