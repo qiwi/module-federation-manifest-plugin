@@ -1,6 +1,6 @@
 import path from 'path'
 import webpack from 'webpack'
-import { ModuleFederationManifestPlugin } from '../../../src'
+import { ModuleFederationManifestPlugin } from '../../../main/ts'
 
 export const config: webpack.Configuration = {
   stats: 'normal',

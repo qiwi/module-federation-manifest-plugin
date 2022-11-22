@@ -1,5 +1,5 @@
 import webpack from 'webpack'
-import type { Configuration } from 'webpack'
+import { expect } from 'earljs'
 
 const runCompilerAsync = (compiler: webpack.Compiler): Promise<webpack.Stats> => {
   return new Promise((resolve, reject) => {
@@ -12,9 +12,9 @@ const runCompilerAsync = (compiler: webpack.Compiler): Promise<webpack.Stats> =>
 
 import fs from 'node:fs/promises'
 import path from 'path'
-import type { ExecutionContext } from 'ava'
+import type { Context, uvu } from 'uvu'
 
-const fixturesDir = path.join(__dirname, '..', 'fixtures')
+const fixturesDir = path.join(__dirname, '../..', 'fixtures')
 
 const getManifest = async (fixtureName: string): Promise<unknown> => {
   return await fs
@@ -37,11 +37,11 @@ const buildFixture = async (fixtureName: string): Promise<webpack.Stats> => {
 }
 
 export const buildAndAssert = async <T extends any>(
-  t: ExecutionContext,
+  t: Context & uvu.Crumbs,
   fixtureName: string,
   expected: T,
 ): Promise<void> => {
   await buildFixture(fixtureName)
   const manifest = await getManifest(fixtureName)
-  t.deepEqual(manifest, expected)
+  expect(manifest).toEqual(expected)
 }

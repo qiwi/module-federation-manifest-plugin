@@ -1,5 +1,6 @@
-import test from 'ava'
-import { ParsedRemoteModule, remoteModuleParser } from '../../src/identifier-parsers'
+import { test } from 'uvu'
+import { ParsedRemoteModule, remoteModuleParser } from '../../../main/ts/identifier-parsers'
+import { expect } from 'earljs'
 
 test('canAcitve() should return true for correct identifiers', (t) => {
   const cases = [
@@ -8,13 +9,7 @@ test('canAcitve() should return true for correct identifiers', (t) => {
     'remote ( ) webpack/container/reference/remote2 ./helpers',
   ]
 
-  cases.forEach((id) => t.is(remoteModuleParser.canActive(id), true, `Expected true for ${id}`))
-})
-
-test('canAcitve() should return false for invalid identifiers', (t) => {
-  const cases = ['remote webpack/container/reference/remote1 ./app', 'remote ( ) webpack/reference/remote2 ./helpers']
-
-  cases.forEach((id) => t.is(remoteModuleParser.canActive(id), true, `Expected true for ${id}`))
+  cases.forEach((id) => expect(remoteModuleParser.canActive(id)).toEqual(true))
 })
 
 test('parse() should return correct parsed value', (t) => {
@@ -38,6 +33,8 @@ test('parse() should return correct parsed value', (t) => {
   ]
 
   cases.forEach(([identifier, expected]) => {
-    t.deepEqual(remoteModuleParser.parse(identifier), expected, `Incorrect result for ${identifier}`)
+    expect(remoteModuleParser.parse(identifier)).toEqual(expected)
   })
 })
+
+test.run()

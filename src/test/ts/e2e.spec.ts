@@ -1,4 +1,4 @@
-import test from 'ava'
+import { test } from 'uvu'
 import { buildAndAssert } from './helpers/build-and-assert'
 
 test('multiple package versions', async (t) => {
@@ -88,3 +88,5 @@ test('remotes and exposed kitchensink', async (t) => {
     },
   })
 })
+
+test.run()

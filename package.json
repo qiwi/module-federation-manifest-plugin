@@ -1,30 +1,69 @@
 {
   "name": "@qiwi/module-federation-manifest-plugin",
   "version": "1.0.0",
-  "main": "dist/es5/index.js",
   "license": "MIT",
+  "source": "src/main/ts/index.ts",
+  "main": "target/es5/blank-ts-repo.js",
+  "types": "typings/index.d.ts",
+  "typescript": {
+    "definition": "typings/index.d.ts"
+  },
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "target",
+    "typings",
+    "flow-typed",
+    "buildstamp.json"
+  ],
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
-    "test": "ava",
-    "lint": "prettier --check ./src ./test"
+    "clean": "rimraf target typings flow-typed buildcache docs coverage buildstamp.json",
+    "lint": "prettier --check src/**/*.{ts,js}",
+    "lint:fix": "prettier --write \"src/**/*.ts\"",
+    "test": "yarn lint && yarn test:unit && yarn test:depcheck && yarn test:depaudit",
+    "test:unit": "c8 -r html -r text -r lcov uvu -r tsm 'src/test/ts/'",
+    "test:deps": "npm-run-all -p -l test:depcheck test:depauditfix",
+    "test:depcheck": "npm_config_yes=true npx depcheck --ignores tsc-esm-fix,tslib,@types/node,typedoc,@qiwi/esm,tsm",
+    "test:depaudit": "yarn audit --level=moderate --groups=dependencies; [[ $? -ge 4 ]] && exit 1 || exit 0",
+    "test:depauditfix": "echo 'audit fix disabled' && exit 1 && npm_config_yes=true npx yarn-audit-fix --audit-level=moderate",
+    "test:report": "yarn test && yarn push:report",
+    "prebuild": "yarn clean && npm_config_yes=true npx buildstamp --git --out.path buildstamp.json",
+    "build": "npm-run-all -p -l build:es5 build:es6 build:esnext build:ts build:libdef docs && yarn build:esmfix",
+    "build:es5": "mkdirp target/es5 && tsc -p tsconfig.es5.json",
+    "build:es6": "mkdirp target/es6 && tsc -p tsconfig.es6.json",
+    "build:esnext": "mkdirp target/esnext && tsc -p tsconfig.esnext.json",
+    "build:ts": "cpy src/main/ts/ target/ts/",
+    "build:libdef": "libdefkit --tsconfig=tsconfig.es5.json --tsconfig=tsconfig.es6.json --tsconfig=tsconfig.esnext.json",
+    "build:esmfix": "yarn tsc-esm-fix --target=target/es6 --target=target/esnext --dirnameVar=false",
+    "docs": "typedoc --options ./typedoc.json ./src/main/ts",
+    "coveralls:push": "cat ./coverage/lcov.info | coveralls || exit 0",
+    "push:report": "yarn coveralls:push",
+    "postupdate": "yarn && yarn test:deps && yarn build && yarn test",
+    "updeps": "npm_config_yes=true npx npm-upgrade"
+  },
+  "dependencies": {
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
-    "ava": "^5.0.1",
+    "@qiwi/esm": "^1.1.8",
+    "@qiwi/libdefkit": "^4.0.8",
+    "@qiwi/npm-run-all": "^4.1.7",
+    "@types/node": "^16.10.3",
+    "c8": "^7.12.0",
+    "coveralls": "^3.1.1",
+    "cpy-cli": "^4.1.0",
+    "earljs": "^0.2.3",
+    "mkdirp": "^1.0.4",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.9.1",
+    "tsc-esm-fix": "^2.20.0",
+    "tsm": "^2.2.2",
+    "typedoc": "^0.23.9",
     "typescript": "^4.8.4",
+    "uvu": "^0.5.6",
     "webpack": "^5.67.0"
   },
   "peerDependencies": {
     "webpack": "^5.67.0"
-  },
-  "ava": {
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
   }
 }

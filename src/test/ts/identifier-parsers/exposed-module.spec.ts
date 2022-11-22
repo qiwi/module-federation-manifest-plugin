@@ -1,5 +1,6 @@
-import test from 'ava'
-import { exposedModuleParser, ParsedExposedModule } from '../../src/identifier-parsers'
+import { test } from 'uvu'
+import { exposedModuleParser, ParsedExposedModule } from '../../../main/ts/identifier-parsers'
+import { expect } from 'earljs'
 
 test('canAcitve() should return true for correct identifiers', (t) => {
   const cases = [
@@ -7,7 +8,7 @@ test('canAcitve() should return true for correct identifiers', (t) => {
     'container entry (default) [["a",{"import":["/webpack-module-federation-manifest-plugin/test/fixtures/remotes-and-exposed-kitchensink/a.js"],"name":"custom-name"}],["b",{"import":["/webpack-module-federation-manifest-plugin/test/fixtures/remotes-and-exposed-kitchensink/b.js"]}],["c2",{"import":["/webpack-module-federation-manifest-plugin/test/fixtures/remotes-and-exposed-kitchensink/c.js"]}]]',
   ]
 
-  cases.forEach((id) => t.is(exposedModuleParser.canActive(id), true, `Expected true for ${id}`))
+  cases.forEach((id) => expect(exposedModuleParser.canActive(id)).toEqual(true))
 })
 
 test('parse() should return correct parsed value', (t) => {
@@ -23,6 +24,8 @@ test('parse() should return correct parsed value', (t) => {
   ]
 
   cases.forEach(([identifier, expected]) => {
-    t.deepEqual(exposedModuleParser.parse(identifier), expected, `Incorrect result for ${identifier}`)
+    expect(exposedModuleParser.parse(identifier)).toEqual(expected)
   })
 })
+
+test.run()

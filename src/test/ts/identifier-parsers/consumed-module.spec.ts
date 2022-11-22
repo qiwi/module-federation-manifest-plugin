@@ -1,5 +1,6 @@
-import test from 'ava'
-import { consumedModuleParser, ParsedConsumedModule } from '../../src/identifier-parsers'
+import { test } from 'uvu'
+import { expect } from 'earljs'
+import { consumedModuleParser, ParsedConsumedModule } from '../../../main/ts/identifier-parsers'
 
 test('canActive() should return true for correct identifiers', (t) => {
   const cases = [
@@ -10,7 +11,7 @@ test('canActive() should return true for correct identifiers', (t) => {
   ]
 
   cases.forEach((identifier) => {
-    t.is(consumedModuleParser.canActive(identifier), true, `Expected true for ${identifier}`)
+    expect(consumedModuleParser.canActive(identifier)).toEqual(true)
   })
 })
 
@@ -21,7 +22,7 @@ test('canActive() should return false for incorrect identifiers', (t) => {
   ]
 
   cases.forEach((identifier) => {
-    t.is(consumedModuleParser.canActive(identifier), false, `Expected false for ${identifier}`)
+    expect(consumedModuleParser.canActive(identifier)).toEqual(false)
   })
 })
 
@@ -46,6 +47,8 @@ test('parse() should return correct parsed value', (t) => {
   ]
 
   cases.forEach(([identifier, expected]) => {
-    t.deepEqual(consumedModuleParser.parse(identifier), expected, `Incorrect result for ${identifier}`)
+    expect(consumedModuleParser.parse(identifier)).toEqual(expected)
   })
 })
+
+test.run()
