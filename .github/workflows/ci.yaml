@@ -1,5 +1,5 @@
 # This is a Github Workflow that runs tests on any push or pull request.
-# If the tests pass and this is a push to the master branch it also runs Semantic Release.
+# If the tests pass and this is a push to the main branch it also runs Semantic Release.
 name: CI
 on: [push, pull_request]
 
@@ -134,7 +134,7 @@ jobs:
         run: yarn test
 
   #      - name: Cache coverage
-  #        if: github.ref == 'refs/heads/master'
+  #        if: github.ref == 'refs/heads/main'
   #        id: cache-coverage
   #        uses: actions/cache@v3
   #        with:
@@ -203,7 +203,7 @@ jobs:
   release:
     name: Release
     # https://github.community/t/trigger-job-on-tag-push-only/18076
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test_push
     runs-on: ubuntu-20.04
     steps:
