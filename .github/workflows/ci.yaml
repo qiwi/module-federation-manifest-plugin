@@ -211,6 +211,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: master
+          persist-credentials: false
 
       - name: Restore artifact from cache (if exists)
         uses: actions/cache@v3
