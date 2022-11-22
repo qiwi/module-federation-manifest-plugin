@@ -30,6 +30,6 @@ export const config: webpack.Configuration = {
 }
 ```
 
-### Manifest schema
+## Manifest schema
 
 You can find schema description [here](https://github.com/qiwi/module-federation-manifest-plugin/blob/main/src/main/ts/schema.ts) and real examples in [tests](https://github.com/qiwi/module-federation-manifest-plugin/blob/main/src/test/ts/e2e.spec.ts)
