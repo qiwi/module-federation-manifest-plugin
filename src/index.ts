@@ -1,3 +1,2 @@
-export { ModuleFederationPluginOptions, ModuleFederationManifestPluginOptions } from './models'
-export { ModuleFederationManifestV1 } from './schema'
-export { ModuleFederationManifestPlugin } from './plugin'
+export { ModuleFederationManifest } from './schema'
+export { ModuleFederationManifestPlugin, ModuleFederationManifestPluginOptions } from './plugin'

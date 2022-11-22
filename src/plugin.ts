@@ -1,9 +1,7 @@
-import type { ModuleFederationManifestV1 } from './schema'
+import type { ModuleFederationManifest } from './schema'
 
 import webpack from 'webpack'
 
-import { ModuleFederationManifestPluginOptions, ModuleFederationPluginOptions } from './models'
-import { PLUGIN_NAME } from './constants'
 import {
   exposedModuleParser,
   remoteModuleParser,
@@ -11,11 +9,18 @@ import {
   providedModuleParser,
 } from './identifier-parsers'
 
-export { ModuleFederationManifestPluginOptions }
+type ModuleFederationPluginOptions = ConstructorParameters<typeof webpack.container.ModuleFederationPlugin>[0]
+
+export interface ModuleFederationManifestPluginOptions {
+  filename: string
+  version: string
+}
 
 const undefinedOrNotEmptyObject = <T extends {}>(obj: T): T | undefined => {
   return Object.keys(obj).length ? obj : undefined
 }
+
+const PLUGIN_NAME = 'ModuleFederationManifest'
 
 export class ModuleFederationManifestPlugin {
   private federationPluginOptions!: ModuleFederationPluginOptions
@@ -52,18 +57,18 @@ export class ModuleFederationManifestPlugin {
     publicPath: string,
     entryChunk: webpack.StatsChunk | undefined,
     modules: webpack.StatsModule[],
-  ): ModuleFederationManifestV1 {
-    const entry: ModuleFederationManifestV1['entry'] =
+  ): ModuleFederationManifest {
+    const entry: ModuleFederationManifest['entry'] =
       entryChunk && entryChunk.files
         ? {
             path: entryChunk.files[0],
           }
         : undefined
 
-    const remotes: ModuleFederationManifestV1['remotes'] = {}
-    const consumes: ModuleFederationManifestV1['consumes'] = {}
-    const provides: ModuleFederationManifestV1['provides'] = {}
-    const exposes: ModuleFederationManifestV1['exposes'] = {}
+    const remotes: ModuleFederationManifest['remotes'] = {}
+    const consumes: ModuleFederationManifest['consumes'] = {}
+    const provides: ModuleFederationManifest['provides'] = {}
+    const exposes: ModuleFederationManifest['exposes'] = {}
 
     for (const module of modules) {
       const { identifier } = module
@@ -115,7 +120,6 @@ export class ModuleFederationManifestPlugin {
     }
 
     return {
-      schemaVersion: '1',
       name: this.federationPluginOptions.name as string,
       version: this.options.version,
       publicPath,
@@ -127,7 +131,7 @@ export class ModuleFederationManifestPlugin {
     }
   }
 
-  private emitManifestAsset(compilation: webpack.Compilation, manifest: ModuleFederationManifestV1) {
+  private emitManifestAsset(compilation: webpack.Compilation, manifest: ModuleFederationManifest) {
     const manifestJson = JSON.stringify(manifest)
     const source = new webpack.sources.RawSource(Buffer.from(manifestJson))
     compilation.emitAsset(this.options.filename, source)

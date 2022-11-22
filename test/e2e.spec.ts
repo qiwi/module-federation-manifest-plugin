@@ -3,7 +3,6 @@ import { buildAndAssert } from './helpers/build-and-assert'
 
 test('multiple package versions', async (t) => {
   await buildAndAssert(t, 'multiple-package-versions', {
-    schemaVersion: '1',
     name: 'container',
     version: 'test',
     publicPath: 'auto',
@@ -24,7 +23,6 @@ test('multiple package versions', async (t) => {
 
 test('multiple package with same versions', async (t) => {
   await buildAndAssert(t, 'multiple-package-same-versions', {
-    schemaVersion: '1',
     name: 'container',
     version: 'test',
     publicPath: 'auto',
@@ -45,7 +43,6 @@ test('multiple package with same versions', async (t) => {
 
 test('shared kitchensink', async (t) => {
   await buildAndAssert(t, 'shared-kitchensink', {
-    schemaVersion: '1',
     name: 'container',
     version: 'test',
     publicPath: 'auto',
@@ -92,7 +89,6 @@ test('remotes and exposed kitchensink', async (t) => {
         modules: ['app', 'helpers'],
       },
     },
-    schemaVersion: '1',
     version: 'test',
   })
 })

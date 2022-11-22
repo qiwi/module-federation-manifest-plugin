@@ -1,5 +1,4 @@
-export interface ModuleFederationManifestV1 {
-  schemaVersion: '1'
+export interface ModuleFederationManifest {
   /**
    * Application name
    */
@@ -30,7 +29,7 @@ export interface ModuleFederationManifestV1 {
      */
     [request: string]: {
       /**
-       * TODO:
+       * Additional name for chunk
        */
       name?: string
     }
