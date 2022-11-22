@@ -24,14 +24,14 @@ jobs:
   build:
     name: build
     needs: init
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Download artifact
         uses: qiwi-forks/action-download-artifact@v2
@@ -85,14 +85,14 @@ jobs:
   test_push:
     needs: [build, init]
     if: github.event_name == 'push'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Restore artifact from cache (if exists)
         uses: actions/cache@v3
@@ -133,22 +133,22 @@ jobs:
         #          NODE_OPTIONS: "--max_old_space_size=4096"
         run: yarn test
 
-  #      - name: Cache coverage
-  #        if: github.ref == 'refs/heads/master'
-  #        id: cache-coverage
-  #        uses: actions/cache@v3
-  #        with:
-  #          path: |
-  #            coverage
-  #            package.json
-  #          key: coverage-${{ needs.init.outputs.checksum }}
+      - name: Cache coverage
+        if: github.ref == 'refs/heads/master'
+        id: cache-coverage
+        uses: actions/cache@v3
+        with:
+          path: |
+            coverage
+            package.json
+          key: coverage-${{ needs.init.outputs.checksum }}
 
   test_pr:
     if: github.event_name == 'pull_request'
     needs: [build, init]
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
         node-version: [16]
     name: Test (Node v${{ matrix.node-version }}, OS ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -195,7 +195,7 @@ jobs:
         run: yarn
 
       - name: Full test
-        if: matrix.node-version == '16' && matrix.os == 'ubuntu-20.04'
+        if: matrix.node-version == '16' && matrix.os == 'ubuntu-22.04'
         #        env:
         #          NODE_OPTIONS: "--max_old_space_size=4096"
         run: yarn test
@@ -203,31 +203,64 @@ jobs:
   release:
     name: Release
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    needs: test_push
-    runs-on: ubuntu-20.04
+    needs: [test_push, init]
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          persist-credentials: false
+          ref: master
+
+      - name: Restore artifact from cache (if exists)
+        uses: actions/cache@v3
+        with:
+          path: artifact.tar
+          key: artifact-${{ needs.init.outputs.checksum }}
+
+      - name: Check artifact
+        if: always()
+        id: check-artifact
+        run: echo "::set-output name=exists::$([ -e "artifact.tar" ] && echo true || echo false)"
+
+      - name: Download artifact
+        if: ${{ steps.check-artifact.outputs.exists == 'false' }}
+        uses: qiwi-forks/action-download-artifact@v2
+        with:
+          name: artifact-${{ needs.init.outputs.checksum }}
+          workflow: 'ci.yaml'
+          workflow_conclusion: false
+          search_artifacts: true
+          search_depth: 10
+      
+      - name: Restore coverage
+        uses: actions/cache@v3
+        with:
+          path: |
+            coverage
+            package.json
+          key: coverage-${{ needs.init.outputs.checksum }}
+
+      - name: Unpack artifact
+        run: tar -xvf artifact.tar
 
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-
+      
       - name: Codeclimate
         uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageLocations: |
-            ${{github.workspace}}/coverage/lcov.info:lcov
+            ${{github.workspace}}/coverage/*.lcov:lcov
 
       - name: Release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GIT_COMMITTER_EMAIL: 'opensource@qiwi.com'
           GIT_COMMITTER_NAME: 'qiwibot'
         run: npm_config_yes=true npx zx-semrel
