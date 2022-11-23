@@ -35,6 +35,9 @@ typings/
 flow-typed/
 buildstamp.json
 
+# artifact from gh cache
+artifact.tar
+
 #Docs
 docs
 doc
