@@ -15,7 +15,7 @@ class ConsumedModuleParser implements IdentifierParser<ParsedConsumedModule> {
   }
 
   parse(identifier: string): ParsedConsumedModule {
-    const [_, shareScope, shareKey, version, strictVersion, _importResolved, singleton, eager] = identifier.split('|')
+    const [, shareScope, shareKey, version, strictVersion, _importResolved, singleton, eager] = identifier.split('|')
     return {
       name: shareKey,
       version: version,

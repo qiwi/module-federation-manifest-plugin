@@ -19,14 +19,13 @@ const undefinedOrNotEmptyObject = <T extends {}>(obj: T): T | undefined => {
   return Object.keys(obj).length ? obj : undefined
 }
 
-const PLUGIN_NAME = 'ModuleFederationManifest'
-
 export class ModuleFederationManifestPlugin {
   private federationPluginOptions!: ModuleFederationPluginOptions
 
   constructor(private options: ModuleFederationManifestPluginOptions) {}
 
   apply(compiler: webpack.Compiler) {
+    const pluginName = this.constructor.name
     const federationPlugin = compiler.options.plugins.find(
       (plugin) => plugin.constructor.name === 'ModuleFederationPlugin',
     ) as
@@ -35,16 +34,16 @@ export class ModuleFederationManifestPlugin {
         })
       | undefined
 
-    if (federationPlugin) {
-      this.federationPluginOptions = { ...federationPlugin._options }
-    } else {
+    if (!federationPlugin) {
       throw new Error('Module Federation Manifest Plugin cannot be used without Module Federation plugin')
     }
 
-    compiler.hooks.thisCompilation.tap(PLUGIN_NAME, (compilation) => {
+    this.federationPluginOptions = { ...federationPlugin._options }
+
+    compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
       compilation.hooks.processAssets.tapPromise(
         {
-          name: PLUGIN_NAME,
+          name: pluginName,
           stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT,
         },
         async () => this.processWebpackAssets(compilation),
