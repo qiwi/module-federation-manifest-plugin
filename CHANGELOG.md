@@ -1,3 +1,8 @@
+## [1.0.3](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.2...v1.0.3) (2022-11-25)
+
+### Fixes & improvements
+* fix: make plugin name match its class (#2) ([e8f2266](https://github.com/qiwi/module-federation-manifest-plugin/commit/e8f2266c757d4b16daa56e4e96c7e63044c12fc0))
+
 ## [1.0.2](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.1...v1.0.2) (2022-11-22)
 
 ### Fixes & improvements
