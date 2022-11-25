@@ -11,7 +11,7 @@ const runCompilerAsync = (compiler: webpack.Compiler): Promise<webpack.Stats> =>
 }
 
 import fs from 'node:fs/promises'
-import path from 'path'
+import path from 'node:path'
 import type { Context, uvu } from 'uvu'
 
 const fixturesDir = path.join(__dirname, '../..', 'fixtures')

@@ -53,8 +53,6 @@
     "build:libdef": "libdefkit --tsconfig=tsconfig.es5.json --tsconfig=tsconfig.es6.json --tsconfig=tsconfig.esnext.json",
     "build:esmfix": "yarn tsc-esm-fix --target=target/es6 --target=target/esnext --dirnameVar=false",
     "docs": "typedoc --options ./typedoc.json ./src/main/ts",
-    "coveralls:push": "cat ./coverage/lcov.info | coveralls || exit 0",
-    "push:report": "yarn coveralls:push",
     "postupdate": "yarn && yarn test:deps && yarn build && yarn test",
     "updeps": "npm_config_yes=true npx npm-upgrade"
   },
@@ -67,7 +65,6 @@
     "@qiwi/npm-run-all": "^4.1.7",
     "@types/node": "^16.10.3",
     "c8": "^7.12.0",
-    "coveralls": "^3.1.1",
     "cpy-cli": "^4.1.0",
     "earljs": "^0.2.3",
     "mkdirp": "^1.0.4",
