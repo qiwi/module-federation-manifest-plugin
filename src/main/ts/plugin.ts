@@ -14,7 +14,7 @@ import {
 type ModuleFederationPluginOptions = ConstructorParameters<typeof webpack.container.ModuleFederationPlugin>[0]
 
 export interface ModuleFederationManifestPluginOptions {
-  filename: string
+  filename?: string
 }
 
 const undefinedOrNotEmptyObject = <T extends {}>(obj: T): T | undefined => {
@@ -145,8 +145,11 @@ export class ModuleFederationManifestPlugin {
   }
 
   private emitManifestAsset(compilation: webpack.Compilation, manifest: ModuleFederationManifest) {
-    const manifestJson = JSON.stringify(manifest)
-    const source = new webpack.sources.RawSource(Buffer.from(manifestJson))
+    if (!this.options.filename) {
+      return
+    }
+
+    const source = new webpack.sources.RawSource(JSON.stringify(manifest))
     compilation.emitAsset(this.options.filename, source)
   }
 

@@ -20,8 +20,9 @@ test('should call onManifestCreated hook with manifest as argument', async () =>
   }
 
   await buildFixture('real-world', (config) => {
-    config.plugins = config.plugins || []
-    config.plugins.push(testPlugin)
+    const cfgCopy = { ...config }
+    cfgCopy.plugins = cfgCopy.plugins || []
+    cfgCopy.plugins.push(testPlugin)
     return config
   })
 

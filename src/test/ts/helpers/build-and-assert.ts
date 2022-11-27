@@ -15,10 +15,12 @@ const runCompilerAsync = (compiler: webpack.Compiler): Promise<webpack.Stats> =>
 
 const fixturesDir = path.join(__dirname, '../..', 'fixtures')
 
+export const getManifestPath = (fixtureName: string): string => {
+  return path.join(fixturesDir, fixtureName, 'build', 'manifest.json')
+}
+
 const getManifest = async (fixtureName: string): Promise<unknown> => {
-  return await fs
-    .readFile(path.join(fixturesDir, fixtureName, 'build', 'manifest.json'), 'utf-8')
-    .then((value) => JSON.parse(value))
+  return await fs.readFile(getManifestPath(fixtureName), 'utf-8').then((value) => JSON.parse(value))
 }
 
 export const buildFixture = async (
