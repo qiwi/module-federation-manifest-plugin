@@ -1,3 +1,8 @@
+## [1.1.0](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.3...v1.1.0) (2022-11-28)
+
+### Features
+* feat: add onManifestCreated hook & no emit option (#3) ([3648640](https://github.com/qiwi/module-federation-manifest-plugin/commit/3648640b52e56b9dc9af6b1d54cd0cc14ee25c10))
+
 ## [1.0.3](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.2...v1.0.3) (2022-11-25)
 
 ### Fixes & improvements
