@@ -57,6 +57,7 @@
     "updeps": "npm_config_yes=true npx npm-upgrade"
   },
   "dependencies": {
+    "tapable": "^2.2.1",
     "tslib": "^2.4.0"
   },
   "devDependencies": {

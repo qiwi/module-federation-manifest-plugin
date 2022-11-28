@@ -12,6 +12,7 @@ export const config: webpack.Configuration = {
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'bundle.js',
+    clean: true,
   },
   plugins: [
     new webpack.container.ModuleFederationPlugin({

@@ -1,5 +1,8 @@
+import { ModuleFederationManifestPlugin } from '../../main/ts'
 import { test } from 'uvu'
-import { buildAndAssert } from './helpers/build-and-assert'
+import { buildAndAssert, buildFixture, getManifestPath } from './helpers/build-and-assert'
+import { expect } from 'earljs'
+import fs from 'node:fs'
 
 test('multiple package versions', async (t) => {
   await buildAndAssert(t, 'multiple-package-versions', {
@@ -87,6 +90,20 @@ test('remotes and exposed kitchensink', async (t) => {
       },
     },
   })
+})
+
+test('should not emit when filename is empty', async () => {
+  const fixtureName = 'real-world'
+
+  await buildFixture('real-world', (config) => {
+    const cfgCopy = { ...config }
+    cfgCopy.plugins = cfgCopy.plugins!.filter((plugin) => plugin.constructor.name !== 'ModuleFederationManifestPlugin')
+    cfgCopy.plugins.push(new ModuleFederationManifestPlugin({}))
+    return cfgCopy
+  })
+  const manifestPath = getManifestPath(fixtureName)
+
+  expect(fs.existsSync(manifestPath)).toEqual(false)
 })
 
 test.run()

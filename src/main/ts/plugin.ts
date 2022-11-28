@@ -1,6 +1,8 @@
 import type { ModuleFederationManifest } from './schema'
+import type { Hooks } from './hooks'
 
 import webpack from 'webpack'
+import { AsyncSeriesHook } from 'tapable'
 
 import {
   exposedModuleParser,
@@ -12,12 +14,14 @@ import {
 type ModuleFederationPluginOptions = ConstructorParameters<typeof webpack.container.ModuleFederationPlugin>[0]
 
 export interface ModuleFederationManifestPluginOptions {
-  filename: string
+  filename?: string
 }
 
 const undefinedOrNotEmptyObject = <T extends {}>(obj: T): T | undefined => {
   return Object.keys(obj).length ? obj : undefined
 }
+
+const compilationHooks = new WeakMap<webpack.Compilation, Hooks>()
 
 export class ModuleFederationManifestPlugin {
   private federationPluginOptions!: ModuleFederationPluginOptions
@@ -49,6 +53,18 @@ export class ModuleFederationManifestPlugin {
         async () => this.processWebpackAssets(compilation),
       )
     })
+  }
+
+  static getHooks(compilation: webpack.Compilation): Hooks {
+    let hooks = compilationHooks.get(compilation)
+    if (!hooks) {
+      hooks = {
+        onManifestCreated: new AsyncSeriesHook(['manifest']),
+      }
+      compilationHooks.set(compilation, hooks)
+    }
+
+    return hooks
   }
 
   private createManifest(
@@ -129,8 +145,11 @@ export class ModuleFederationManifestPlugin {
   }
 
   private emitManifestAsset(compilation: webpack.Compilation, manifest: ModuleFederationManifest) {
-    const manifestJson = JSON.stringify(manifest)
-    const source = new webpack.sources.RawSource(Buffer.from(manifestJson))
+    if (!this.options.filename) {
+      return
+    }
+
+    const source = new webpack.sources.RawSource(JSON.stringify(manifest))
     compilation.emitAsset(this.options.filename, source)
   }
 
@@ -141,6 +160,7 @@ export class ModuleFederationManifestPlugin {
     const remoteEntryChunk = this.getRemoteEntryChunk(stats)
 
     const manifest = this.createManifest(stats.publicPath as string, remoteEntryChunk, stats.modules || [])
+    await ModuleFederationManifestPlugin.getHooks(compilation).onManifestCreated.promise(manifest)
 
     this.emitManifestAsset(compilation, manifest)
   }

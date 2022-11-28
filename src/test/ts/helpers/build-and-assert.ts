@@ -1,5 +1,8 @@
 import webpack from 'webpack'
 import { expect } from 'earljs'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import type { Context, uvu } from 'uvu'
 
 const runCompilerAsync = (compiler: webpack.Compiler): Promise<webpack.Stats> => {
   return new Promise((resolve, reject) => {
@@ -10,20 +13,23 @@ const runCompilerAsync = (compiler: webpack.Compiler): Promise<webpack.Stats> =>
   })
 }
 
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import type { Context, uvu } from 'uvu'
-
 const fixturesDir = path.join(__dirname, '../..', 'fixtures')
 
-const getManifest = async (fixtureName: string): Promise<unknown> => {
-  return await fs
-    .readFile(path.join(fixturesDir, fixtureName, 'build', 'manifest.json'), 'utf-8')
-    .then((value) => JSON.parse(value))
+export const getManifestPath = (fixtureName: string): string => {
+  return path.join(fixturesDir, fixtureName, 'build', 'manifest.json')
 }
 
-const buildFixture = async (fixtureName: string): Promise<webpack.Stats> => {
-  const { config } = require(path.join(fixturesDir, fixtureName, 'webpack.config.ts'))
+const getManifest = async (fixtureName: string): Promise<unknown> => {
+  return await fs.readFile(getManifestPath(fixtureName), 'utf-8').then((value) => JSON.parse(value))
+}
+
+export const buildFixture = async (
+  fixtureName: string,
+  configTransformer: (config: webpack.Configuration) => webpack.Configuration = (cfg) => cfg,
+): Promise<webpack.Stats> => {
+  let { config } = require(path.join(fixturesDir, fixtureName, 'webpack.config.ts'))
+  config = configTransformer(config)
+
   const compiler = webpack(config)
   const stats = await runCompilerAsync(compiler)
 
@@ -36,11 +42,7 @@ const buildFixture = async (fixtureName: string): Promise<webpack.Stats> => {
   return stats
 }
 
-export const buildAndAssert = async <T extends any>(
-  t: Context & uvu.Crumbs,
-  fixtureName: string,
-  expected: T,
-): Promise<void> => {
+export const buildAndAssert = async (t: Context & uvu.Crumbs, fixtureName: string, expected: any): Promise<void> => {
   await buildFixture(fixtureName)
   const manifest = await getManifest(fixtureName)
   expect(manifest).toEqual(expected)

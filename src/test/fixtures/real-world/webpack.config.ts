@@ -18,21 +18,19 @@ export const config: webpack.Configuration = {
     new webpack.container.ModuleFederationPlugin({
       name: 'container',
       filename: 'entry.js',
-      shareScope: 'test',
-      remotes: {
-        remote1: `remote1@http://localhost:4000/remoteEntry.js`,
-        remote2: `remote2@http://localhost:5000/remoteEntry.js`,
-        remote3: `remote3@http://localhost:5000/remoteEntry.js`,
+      shared: {
+        react: {
+          requiredVersion: '^17.0.2',
+        },
+        'react-dom': {
+          requiredVersion: '^17.0.2',
+        },
       },
       exposes: {
-        a: {
-          import: path.join(__dirname, './a.js'),
-          name: 'custom-name',
-        },
-        b: path.join(__dirname, './b.js'),
-        c2: {
-          import: path.join(__dirname, './c.js'),
-        },
+        export: path.join(__dirname, './export.js'),
+      },
+      remotes: {
+        remote1: `remote1@http://localhost:4000/remoteEntry.js`,
       },
     }),
     new ModuleFederationManifestPlugin({
