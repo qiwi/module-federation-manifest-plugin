@@ -88,14 +88,6 @@ export class ModuleFederationManifestPlugin {
       const { identifier } = module
 
       if (!identifier) {
-        // Actually I don't know cases when identifier is not specified
-        // According to webpack sources all types that we need always have it
-        // Let's warn about it to obtain information from real cases
-        // I think all these warnings will be false positive
-        console.log("WARN: Can't get module.identifier")
-        console.log('WARN: Please report about it')
-        console.log('WARN: Provide source code and info below:')
-        console.log(module)
         continue
       }
 
@@ -155,7 +147,12 @@ export class ModuleFederationManifestPlugin {
 
   private async processWebpackAssets(compilation: webpack.Compilation): Promise<void> {
     const liveStats = compilation.getStats()
-    const stats = liveStats.toJson()
+    const stats = liveStats.toJson({
+      all: false,
+      chunks: true,
+      publicPath: true,
+      modules: true,
+    })
 
     const remoteEntryChunk = this.getRemoteEntryChunk(stats)
 
