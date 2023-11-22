@@ -1,3 +1,8 @@
+## [1.1.1](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.1.0...v1.1.1) (2023-11-22)
+
+### Fixes & improvements
+* perf: improve perfomance, emit only needed stats (#8) ([a0024e6](https://github.com/qiwi/module-federation-manifest-plugin/commit/a0024e610ad7044f94f23cd547291f93f21fd353))
+
 ## [1.1.0](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.0.3...v1.1.0) (2022-11-28)
 
 ### Features
