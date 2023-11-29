@@ -1,3 +1,8 @@
+## [1.1.2](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.1.1...v1.1.2) (2023-11-29)
+
+### Fixes & improvements
+* fix: inconsistent behavior with lazy compilation (#9) ([1c1ab6c](https://github.com/qiwi/module-federation-manifest-plugin/commit/1c1ab6c4a723c6480abb2f22b9283482249c3f7c))
+
 ## [1.1.1](https://github.com/qiwi/module-federation-manifest-plugin/compare/v1.1.0...v1.1.1) (2023-11-22)
 
 ### Fixes & improvements
