@@ -1,8 +1,8 @@
-import { ModuleFederationManifestPlugin } from '../../main/ts'
-import { test } from 'uvu'
-import { buildAndAssert, buildFixture, getManifestPath } from './helpers/build-and-assert'
 import { expect } from 'earljs'
 import fs from 'node:fs'
+import { test } from 'uvu'
+import { ModuleFederationManifestPlugin } from '../../main/ts'
+import { buildAndAssert, buildFixture, getManifestPath } from './helpers/build-and-assert'
 
 test('multiple package versions', async (t) => {
   await buildAndAssert(t, 'multiple-package-versions', {
@@ -86,7 +86,7 @@ test('remotes and exposed kitchensink', async (t) => {
         modules: ['app'],
       },
       remote2: {
-        modules: ['app', 'helpers'],
+        modules: ['helpers', 'app'],
       },
     },
   })
