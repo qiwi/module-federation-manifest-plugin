@@ -1,6 +1,6 @@
-import type { ModuleFederationManifest } from './schema'
 import type tapable from 'tapable'
+import type { ModuleFederationManifest } from './schema'
 
-export interface Hooks {
+export interface ModuleFederationManifestPluginHooks {
   onManifestCreated: tapable.AsyncSeriesHook<[ModuleFederationManifest]>
 }

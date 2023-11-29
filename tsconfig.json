@@ -17,7 +17,7 @@
     "declaration": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
+    "strictNullChecks": true,
     "incremental": true,
     "tsBuildInfoFile": "./buildcache/.tsbuildinfo"
   },

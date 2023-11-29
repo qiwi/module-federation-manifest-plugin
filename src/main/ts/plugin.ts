@@ -1,14 +1,14 @@
+import type { ModuleFederationManifestPluginHooks } from './hooks'
 import type { ModuleFederationManifest } from './schema'
-import type { Hooks } from './hooks'
 
-import webpack from 'webpack'
 import { AsyncSeriesHook } from 'tapable'
+import webpack, { type Chunk, type Module } from 'webpack'
 
 import {
-  exposedModuleParser,
-  remoteModuleParser,
   consumedModuleParser,
+  exposedModuleParser,
   providedModuleParser,
+  remoteModuleParser,
 } from './identifier-parsers'
 
 type ModuleFederationPluginOptions = ConstructorParameters<typeof webpack.container.ModuleFederationPlugin>[0]
@@ -21,7 +21,7 @@ const undefinedOrNotEmptyObject = <T extends {}>(obj: T): T | undefined => {
   return Object.keys(obj).length ? obj : undefined
 }
 
-const compilationHooks = new WeakMap<webpack.Compilation, Hooks>()
+const compilationHooks = new WeakMap<webpack.Compilation, ModuleFederationManifestPluginHooks>()
 
 export class ModuleFederationManifestPlugin {
   private federationPluginOptions!: ModuleFederationPluginOptions
@@ -31,7 +31,7 @@ export class ModuleFederationManifestPlugin {
   apply(compiler: webpack.Compiler) {
     const pluginName = this.constructor.name
     const federationPlugin = compiler.options.plugins.find(
-      (plugin) => plugin.constructor.name === 'ModuleFederationPlugin',
+      (plugin) => plugin?.constructor.name === 'ModuleFederationPlugin',
     ) as
       | (webpack.container.ModuleFederationPlugin & {
           _options: ModuleFederationManifestPluginOptions
@@ -50,12 +50,12 @@ export class ModuleFederationManifestPlugin {
           name: pluginName,
           stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT,
         },
-        async () => this.processWebpackAssets(compilation),
+        async () => await this.processWebpackAssets(compilation),
       )
     })
   }
 
-  static getHooks(compilation: webpack.Compilation): Hooks {
+  static getHooks(compilation: webpack.Compilation): ModuleFederationManifestPluginHooks {
     let hooks = compilationHooks.get(compilation)
     if (!hooks) {
       hooks = {
@@ -69,23 +69,20 @@ export class ModuleFederationManifestPlugin {
 
   private createManifest(
     publicPath: string,
-    entryChunk: webpack.StatsChunk | undefined,
-    modules: webpack.StatsModule[],
+    entryChunk: Chunk | undefined,
+    modules: Set<Module>,
   ): ModuleFederationManifest {
-    const entry: ModuleFederationManifest['entry'] =
-      entryChunk && entryChunk.files
-        ? {
-            path: entryChunk.files[0],
-          }
-        : undefined
+    const entry: ModuleFederationManifest['entry'] = entryChunk?.files && {
+      path: Array.from(entryChunk.files)[0],
+    }
 
     const remotes: ModuleFederationManifest['remotes'] = {}
     const consumes: ModuleFederationManifest['consumes'] = {}
     const provides: ModuleFederationManifest['provides'] = {}
     const exposes: ModuleFederationManifest['exposes'] = {}
 
-    for (const module of modules) {
-      const { identifier } = module
+    for (const module of Array.from(modules)) {
+      const identifier = module.identifier()
 
       if (!identifier) {
         continue
@@ -146,23 +143,18 @@ export class ModuleFederationManifestPlugin {
   }
 
   private async processWebpackAssets(compilation: webpack.Compilation): Promise<void> {
-    const liveStats = compilation.getStats()
-    const stats = liveStats.toJson({
-      all: false,
-      chunks: true,
-      publicPath: true,
-      modules: true,
-    })
+    const manifest = this.createManifest(
+      compilation.outputOptions.publicPath as string,
+      this.getRemoteEntryChunk(compilation.chunks),
+      compilation.modules,
+    )
 
-    const remoteEntryChunk = this.getRemoteEntryChunk(stats)
-
-    const manifest = this.createManifest(stats.publicPath as string, remoteEntryChunk, stats.modules || [])
     await ModuleFederationManifestPlugin.getHooks(compilation).onManifestCreated.promise(manifest)
 
     this.emitManifestAsset(compilation, manifest)
   }
 
-  private getRemoteEntryChunk(stats: webpack.StatsCompilation) {
-    return stats.chunks?.find((chunk) => chunk.names?.find((name) => name === this.federationPluginOptions.name))
+  private getRemoteEntryChunk(chunks: Set<Chunk>): Chunk | undefined {
+    return Array.from(chunks).find((chunk) => chunk.name === this.federationPluginOptions.name)
   }
 }
